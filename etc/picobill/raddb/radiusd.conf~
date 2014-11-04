@@ -1,0 +1,96 @@
+# -*- text -*-
+##
+## radiusd.conf	-- FreeRADIUS server configuration file.
+##
+
+prefix		= /usr
+exec_prefix	= /usr
+sysconfdir	= /etc
+localstatedir	= /var
+sbindir		= /usr/sbin
+logdir		= /var/log
+raddbdir	= /etc/picobill/raddb
+radacctdir	= /var/db/picobill/acct
+
+name	= picorad
+
+confdir	= ${raddbdir}
+run_dir	= ${localstatedir}/run
+db_dir	= /pico/db/picobill
+libdir	= /usr/lib/freeradius2
+
+pidfile	= ${run_dir}/${name}.pid
+
+#user	= radius
+#group	= radius
+
+max_request_time= 30
+cleanup_delay	= 5
+max_requests	= 1024
+
+listen {
+	type	= auth
+	ipaddr	= *
+	port	= 0
+#	interface = br-lan
+}
+
+listen {
+	ipaddr	= *
+	port	= 0
+	type	= acct
+#	interface = br-lan
+}
+
+hostname_lookups	= no
+allow_core_dumps	= no
+regular_expressions	= yes
+extended_expressions	= yes
+log {
+	destination	= syslog
+	#file		= ${logdir}/radius.log
+	#requests	= ${logdir}/radiusd-%{%{Virtual-Server}:-DEFAULT}-%Y%m%d.log
+	syslog_facility	= daemon
+	stripped_names	= no
+	auth		= no
+	auth_badpass	= no
+	auth_goodpass	= no
+#	msg_goodpass	= ""
+#	msg_badpass	= ""
+}
+
+checkrad	= ${sbindir}/checkrad
+
+security {
+	max_attributes	= 200
+	reject_delay	= 1
+	status_server	= yes
+	allow_vulnerable_openssl = no
+}
+
+proxy_requests	= no
+#$INCLUDE proxy.conf
+
+$INCLUDE clients.conf
+
+thread pool {
+	start_servers = 5
+	max_servers = 32
+	min_spare_servers = 3
+	max_spare_servers = 10
+	max_queue_size = 65536
+	max_requests_per_server = 0
+}
+
+modules {
+	$INCLUDE ${confdir}/modules/
+#	$INCLUDE eap.conf
+	$INCLUDE sql.conf
+}
+
+instantiate {
+	sql
+}
+
+#$INCLUDE policy.conf
+$INCLUDE sites/
