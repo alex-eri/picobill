@@ -1,0 +1,34 @@
+require "ubus"
+require "db"
+
+service_handler = {
+    ["pico.service"] = {
+
+        list = {
+            function(req, msg)
+            
+                cur = assert (bildb:execute (selectSQL('service',msg)));
+                row = cur:fetch ({}, "a");
+                while row do
+                    conn:reply(req, row);
+                    row = cur:fetch (row, "a");
+                end
+                cur:close()
+            end, { account=ubus.STRING }
+        },
+
+}
+}
+
+local GET_WRITEOFF_SQL =  [[  SELECT user.account, service.cost, service.period FROM user,service,userservice 
+    WHERE user.username = userservice.username AND service.service = userservice.service AND userservice.enabled = TRUE ;]]
+
+function writeoff()
+    cur = bildb:execute (GET_WRITEOFF_SQL);
+                row = cur:fetch ({}, "a");
+                while row do
+                    print(row)
+                    row = cur:fetch (row, "a");
+                end
+    cur:close()
+end

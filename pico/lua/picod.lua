@@ -13,7 +13,22 @@ end
 require "db"
 require "nas"
 
-assert(nas_handler)
+
+function get_handler(schema)
+        local handler={}
+        for table, columns in pairs(schema.tables) do
+                local path = 'pico.'..schema.section..'.'..table
+                local sec = {}
+                for fu,deco in pairs(ubusDB) do
+                      sec[fu] = {deco(table,schema.db), columns}  
+                end
+                handler[path] = sec
+        end
+        return handler
+end
+
+nas_handler = get_handler(nas_schema)
+
 conn:add(nas_handler)
 
 uloop.run()

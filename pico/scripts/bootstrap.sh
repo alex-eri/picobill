@@ -1,0 +1,14 @@
+#!/bin/sh 
+
+DBFILE=$(uci get pico.radius.dbfile)
+[ -z $DBFILE ] && uci set pico.radius.dbfile=/pico/db/radius.db
+
+SCHEMA=$(uci get pico.radius.schema)
+[ -z $SCHEMA ] && uci set pico.radius.schema=/pico/sql/radius.sql
+
+BILDBFILE=$(uci get pico.billing.dbfile)
+[ -z $BILDBFILE ] && uci set pico.billing.dbfile=/pico/db/billing.db
+
+uci commit pico
+
+[ -n $DBFILE ] && [ -n $SCHEMA ] && [[ -f $DBFILE ]] || cat $SCHEMA | sqlite3 $DBFILE

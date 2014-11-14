@@ -1,0 +1,41 @@
+require "ubus"
+require "db"
+
+accounts_handler = {
+    ["pico.account"] = {
+        list = {
+            function(req, msg)
+            
+                cur = assert (bildb:execute (selectSQL('account',msg)));
+                row = cur:fetch ({}, "a");
+                while row do
+                    conn:reply(req, row);
+                    row = cur:fetch (row, "a");
+                end
+                cur:close()
+            end, { account=ubus.STRING }
+        },
+        add = {
+            function(req, msg)
+                assert(msg.account)
+                bildb:execute( insertSQL('account', msg) );
+            end, { account=ubus.STRING, balance=ubus.STRING }
+        },
+        adduser = {
+            function(req, msg)
+                assert(msg.account and msg.username)
+                
+                bildb:execute( insertSQL('user', msg) );
+            end, { account=ubus.STRING, balance=ubus.STRING }
+        },
+        payment = {
+            function(req, msg)
+                assert(msg.account and msg.ammount)
+                bildb:execute( insertSQL('fiscal', msg) );
+            end, { account=ubus.STRING, ammount=ubus.STRING, uuid=ubus.STRING, date=ubus.INT64 }
+        },
+        
+    }
+}
+
+
