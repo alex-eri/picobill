@@ -1,0 +1,3 @@
+[submodule "luci2"]
+	path = luci2
+	url = git://git.openwrt.org/project/luci2/ui.git
