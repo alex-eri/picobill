@@ -53,7 +53,7 @@ function keypat_op(kv)
     local n=0   
     for i = 1,#keys do
         
-        if keys[i] ~= 'id' then
+        if keys[i] ~= 'ubus_rpc_session' then
             n = n+1
             m = string.gmatch(keys[i],"([^__]+)")
             field = m() or keys[i]
@@ -63,7 +63,7 @@ function keypat_op(kv)
     end
     return sets
 end
-
+-- {... where:{id:12}}
 SQL = {
 
 insert = function (t,kv)
@@ -74,7 +74,7 @@ end,
 
 update = function (t,kv)
     local sets = keypat_op(kv)
-    local req = "UPDATE "..t.." SET "..table.concat(sets,', ').." WHERE id = ${id} ;"
+    local req = "UPDATE "..t.." SET "..table.concat(sets,', ').." WHERE id = ${_id} ;"
     return interpSQL(req,kv);
 end,
 
@@ -87,7 +87,7 @@ select = function (t,kv)
 end,
 
 delete = function (t,kv)
-    return interpSQL("DELETE FROM "..t.." WHERE id = ${id}",kv)
+    return interpSQL("DELETE FROM "..t.." WHERE id = ${_id}",kv)
 end,
 
 }
@@ -95,15 +95,15 @@ end,
 ubusDB = {
 list = function (t,db)
     return function(req,msg)
-        print(db)
-        print(SQL.select(t,msg))
+        --print(db)
+        --print(SQL.select(t,msg))
         local cur = db:execute (SQL.select(t,msg));
-        print(cur)
+        --print(cur)
         if not cur then return end
         local row = cur:fetch ({}, "a");
         while row do
             conn:reply(req, row);
-            print(row.id);
+            --print(row.id);
             row = cur:fetch (row, "a");
         end
         cur:close()
@@ -112,12 +112,28 @@ end,
 
 add = function (t,db) 
     return function(req,msg)
-        print(db)
-        for k,v in pairs(msg) do print(k,v) end
-        print(SQL.insert('nas', msg))
+        --print(db)
+        --for k,v in pairs(msg) do print(k,v) end
+        --print(SQL.insert('nas', msg))
         local cur = db:execute( SQL.insert('nas', msg));
-        print(cur)
-        
+        cur = db:execute ("SELECT last_insert_rowid() as id;")
+        local row = cur:fetch ({}, "a");
+        conn:reply(req, row);
+        cur:close()
+    end
+end,
+
+remove = function (t,db) 
+    return function(req,msg)
+        local cur = db:execute( SQL.delete('nas', msg));
+        conn:reply(req, {success=cur});
+    end
+end,
+
+edit = function (t,db) 
+    return function(req,msg)
+        local cur = db:execute( SQL.update('nas', msg));
+        conn:reply(req, {success=cur});
     end
 end,
 }

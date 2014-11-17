@@ -9,6 +9,10 @@ SCHEMA=$(uci get pico.radius.schema)
 BILDBFILE=$(uci get pico.billing.dbfile)
 [ -z $BILDBFILE ] && uci set pico.billing.dbfile=/pico/db/billing.db
 
+BILSCHEMA=$(uci get pico.billing.schema)
+[ -z $BILSCHEMA ] && uci set pico.billing.schema=/pico/sql/billing.sql
+
 uci commit pico
 
 [ -n $DBFILE ] && [ -n $SCHEMA ] && [[ -f $DBFILE ]] || cat $SCHEMA | sqlite3 $DBFILE
+[ -n $BILDBFILE ] && [ -n $BILSCHEMA ] && [[ -f $BILDBFILE ]] || cat $BILSCHEMA | sqlite3 $BILDBFILE

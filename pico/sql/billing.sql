@@ -2,7 +2,7 @@ CREATE TABLE account (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	account varchar(16) NOT NULL,
 	balance NUMERIC NOT NULL default 0,
-	limit NUMERIC NOT NULL default 0
+	limitat NUMERIC NOT NULL default 0
 );
 CREATE INDEX account_account ON account(account);
 
@@ -10,7 +10,6 @@ CREATE TABLE service (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         service varchar(16) NOT NULL,
         cost NUMERIC NOT NULL default 0,
-        inclusion_cost NUMERIC NOT NULL default 0,
         period INTEGER
 );
 CREATE INDEX service_name ON service(service);

@@ -11,8 +11,6 @@ if not conn then
 end
 
 require "db"
-require "nas"
-
 
 function get_handler(schema)
         local handler={}
@@ -27,9 +25,7 @@ function get_handler(schema)
         return handler
 end
 
-nas_handler = get_handler(nas_schema)
-
-conn:add(nas_handler)
+require "radius"
 
 uloop.run()
 

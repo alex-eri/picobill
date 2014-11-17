@@ -1,0 +1,7 @@
+config pico 'radius'
+        option dbfile '/pico/db/radius.db'
+        option schema '/pico/sql/radius.sql'
+
+config pico 'billing'
+        option dbfile '/pico/db/billing.db'
+        option schema '/pico/sql/billing.sql'

@@ -1,0 +1,24 @@
+require "ubus"
+require "db"
+
+nas_schema={
+db=raddb,
+section='radius',
+tables={nas={   id=ubus.INT32,
+                nasname=ubus.STRING,
+                shortname=ubus.STRING,
+                ["type"]=ubus.STRING,
+                ports=ubus.INT32,
+                secret=ubus.STRING,
+                server=ubus.STRING,
+                community=ubus.STRING,
+                description=ubus.STRING 
+            }}
+}
+
+
+nas_handler = get_handler(nas_schema)
+
+conn:add(nas_handler)
+
+

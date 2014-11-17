@@ -1,7 +1,7 @@
 require "ubus"
 require "db"
 
-[[nas_handler = {
+--[[nas_handler = {
 ["pico.radius.nas"] = {
         list = {
             ubusDB.list('nas',raddb), {}
@@ -41,9 +41,9 @@ require "db"
                 raddb:execute( deleteSQL('nas',msg))
             end, {  id=ubus.INT32 }
     }
-}
-}
-]]
+--}
+--}
+--]]
 
 nas_schema={
 db=raddb,
