@@ -1,0 +1,11 @@
+{
+	"services": {
+		"title": "Services",
+		"index": 40
+	},
+	"services/pico": {
+		"title": "pico",
+		"acls": [ "pico" ],
+		"view": "services/pico"
+	}
+}

@@ -1,0 +1,15 @@
+{
+	"pico": {
+		"description": "pico management",
+		"read": {
+			"uci": [
+				"pico"
+			]
+		},
+		"write": {
+			"uci": [
+				"pico"
+			]
+		}
+	}
+}
