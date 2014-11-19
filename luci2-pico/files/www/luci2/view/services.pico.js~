@@ -1,6 +1,6 @@
 L.ui.view.extend({
 	title: L.tr('Nases'),
-	refresh: 60000,
+	refresh: 5000,
 
 	getNas: L.rpc.declare({
 		object: 'pico.radius.nas',

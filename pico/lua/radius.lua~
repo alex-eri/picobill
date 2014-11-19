@@ -1,7 +1,7 @@
 require "ubus"
 require "db"
 
-nas_schema={
+local nas_schema={
 db=raddb,
 section='radius',
 tables={nas={   id=ubus.INT32,
@@ -16,9 +16,13 @@ tables={nas={   id=ubus.INT32,
             }}
 }
 
+local radacct_schema={
+db=raddb,
+section='radius',
+tables={radacct={}}
+}
 
-nas_handler = get_handler(nas_schema)
 
-conn:add(nas_handler)
-
+conn:add(get_handler(nas_schema))
+conn:add(get_handler(radacct_schema))
 
